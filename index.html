@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Café — Reputation &amp; Feedback Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div class="brand-text">
+        <span class="brand-name">Nova Café</span>
+        <span class="brand-sub">Reputation Manager</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard">
+        <span class="nav-ico">◆</span> Dashboard
+      </button>
+      <button class="nav-item" data-view="inbox">
+        <span class="nav-ico">✉</span> Feedback Inbox
+      </button>
+      <button class="nav-item" data-view="requests">
+        <span class="nav-ico">↗</span> Review Requests
+      </button>
+      <button class="nav-item" data-view="simulator">
+        <span class="nav-ico">☺</span> Customer Simulator
+      </button>
+      <button class="nav-item" data-view="settings">
+        <span class="nav-ico">⚙</span> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="demo-badge">100% FREE DEMO</div>
+      <p>No paid APIs. No SMS/WhatsApp costs. Runs entirely in your browser via <code>localStorage</code>.</p>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- ---------- DASHBOARD VIEW ---------- -->
+    <section class="view active" id="view-dashboard">
+      <header class="view-header">
+        <div>
+          <h1>Reputation Dashboard</h1>
+          <p class="muted">A live look at how Nova Café customers feel about their visits.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-reset-demo">Reset Demo Data</button>
+      </header>
+
+      <div class="stat-grid" id="stat-grid"><!-- injected --></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Feedback by Category</h3>
+          <p class="muted small">Detected automatically from written feedback using local keyword analysis — no AI API involved.</p>
+          <div id="category-bars" class="category-bars"><!-- injected --></div>
+        </div>
+
+        <div class="card">
+          <h3>Needs a Response</h3>
+          <p class="muted small">Negative or neutral feedback that hasn't been replied to yet.</p>
+          <div id="needs-response-list" class="mini-list"><!-- injected --></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Recent Feedback</h3>
+        <div id="recent-feedback" class="feedback-table"><!-- injected --></div>
+      </div>
+    </section>
+
+    <!-- ---------- FEEDBACK INBOX VIEW ---------- -->
+    <section class="view" id="view-inbox">
+      <header class="view-header">
+        <div>
+          <h1>Feedback Inbox</h1>
+          <p class="muted">Every review and private comment, in one place.</p>
+        </div>
+      </header>
+
+      <div class="filter-bar">
+        <select id="filter-rating">
+          <option value="all">All ratings</option>
+          <option value="5">★★★★★</option>
+          <option value="4">★★★★☆</option>
+          <option value="3">★★★☆☆</option>
+          <option value="2">★★☆☆☆</option>
+          <option value="1">★☆☆☆☆</option>
+        </select>
+        <select id="filter-category">
+          <option value="all">All categories</option>
+          <option value="Service">Service</option>
+          <option value="Staff">Staff</option>
+          <option value="Price">Price</option>
+          <option value="Quality">Quality</option>
+          <option value="Waiting time">Waiting time</option>
+          <option value="Cleanliness">Cleanliness</option>
+        </select>
+        <select id="filter-status">
+          <option value="all">All statuses</option>
+          <option value="Needs Response">Needs response</option>
+          <option value="Responded">Responded</option>
+          <option value="No Response Needed">No response needed</option>
+        </select>
+      </div>
+
+      <div id="inbox-list" class="inbox-list"><!-- injected --></div>
+    </section>
+
+    <!-- ---------- REVIEW REQUESTS VIEW ---------- -->
+    <section class="view" id="view-requests">
+      <header class="view-header">
+        <div>
+          <h1>Review Requests</h1>
+          <p class="muted">Send a simulated review-request link after an order is completed.</p>
+        </div>
+      </header>
+
+      <div class="card">
+        <h3>Send a New Review Request</h3>
+        <form id="form-send-request" class="inline-form">
+          <input type="text" id="req-name" placeholder="Customer name" required>
+          <input type="text" id="req-order" placeholder="Order / service (e.g. Cappuccino + Croissant)" required>
+          <button type="submit" class="btn btn-primary">Send Request</button>
+        </form>
+        <p class="muted small">This simulates sending an SMS/email/WhatsApp review link — no real message is sent. The request appears below and in the Customer Simulator.</p>
+      </div>
+
+      <div class="card">
+        <h3>Sent Requests</h3>
+        <div id="requests-list" class="requests-list"><!-- injected --></div>
+      </div>
+    </section>
+
+    <!-- ---------- CUSTOMER SIMULATOR VIEW ---------- -->
+    <section class="view" id="view-simulator">
+      <header class="view-header">
+        <div>
+          <h1>Customer Simulator</h1>
+          <p class="muted">This is what a Nova Café customer sees when they open their review-request link.</p>
+        </div>
+      </header>
+
+      <div id="simulator-pending" class="card">
+        <h3>Pick a review request to open, as the customer would</h3>
+        <div id="pending-requests" class="pending-requests"><!-- injected --></div>
+      </div>
+
+      <div id="simulator-flow" class="customer-phone-frame" hidden>
+        <!-- injected review flow -->
+      </div>
+    </section>
+
+    <!-- ---------- SETTINGS VIEW ---------- -->
+    <section class="view" id="view-settings">
+      <header class="view-header">
+        <div>
+          <h1>Settings</h1>
+          <p class="muted">Configure the public review-link placeholders shown to happy customers.</p>
+        </div>
+      </header>
+
+      <div class="card">
+        <h3>Public Review Links (placeholders)</h3>
+        <form id="form-settings" class="settings-form">
+          <label>Google Reviews link
+            <input type="text" id="setting-google" placeholder="https://g.page/r/your-cafe/review">
+          </label>
+          <label>Instagram profile link
+            <input type="text" id="setting-instagram" placeholder="https://instagram.com/novacafe">
+          </label>
+          <label>Website / TripAdvisor link
+            <input type="text" id="setting-tripadvisor" placeholder="https://tripadvisor.com/your-cafe">
+          </label>
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+        </form>
+      </div>
+
+      <div class="card note-card">
+        <h3>About this demo</h3>
+        <p>Nova Café's Reputation Manager is a fully self-contained portfolio demo. Everything — review requests, star ratings, written feedback, categorization, and response drafting — runs locally in the browser using <code>localStorage</code>. Nothing is sent to a server, and no paid API keys are required.</p>
+        <p><strong>Ready to go live?</strong> This exact flow can be connected to real tools when a client is ready:</p>
+        <ul>
+          <li>Google Business Profile API — to post/read real Google reviews</li>
+          <li>WhatsApp Business API / Twilio SMS — to send real review-request messages</li>
+          <li>An LLM API (e.g. Claude) — to generate richer, more nuanced response drafts</li>
+          <li>A real database (e.g. Supabase/Firebase) — to persist data beyond one browser</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Feedback detail modal -->
+<div class="modal-backdrop" id="modal-backdrop" hidden>
+  <div class="modal" id="modal-content"><!-- injected --></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
